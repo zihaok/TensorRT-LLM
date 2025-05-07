@@ -666,14 +666,16 @@ class FusedMoE(nn.Module):
             x_sf, token_selected_experts, token_final_scales = self.all_gather(
                 [x_sf, token_selected_experts, token_final_scales])
             x = allgather(x, self.mapping, gather_dim=0)
-            token_selected_experts = token_selected_experts.flatten(
-                0, 1).contiguous()
-            token_final_scales = token_final_scales.flatten(0, 1).contiguous()
-
             if x_sf is not None:
                 x_sf = reswizzle_sf(x_sf, x_row, x_col,
                                     self.scaling_vector_size)
 
+                    # llama4 token final scales are already multiplied with input x
+            if not self.apply_router_weight_on_input:
+                token_final_scales = token_final_scales.flatten(0,
+                                                                1).contiguous()
+            token_selected_experts = token_selected_experts.flatten(
+                0, 1).contiguous()
         final_hidden_states = torch.ops.trtllm.fused_moe(
             x,
             token_selected_experts,
