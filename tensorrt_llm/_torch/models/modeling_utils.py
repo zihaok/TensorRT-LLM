@@ -11,6 +11,7 @@ from torch.utils._pytree import tree_any_only
 from tqdm import tqdm
 
 from ...logger import logger
+from ...mapping import Mapping
 from ..attention_backend import AttentionMetadata
 from ..model_config import ModelConfig, TConfig
 from ..modules.attention import Attention
