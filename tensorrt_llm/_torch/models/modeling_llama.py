@@ -295,8 +295,8 @@ class Llama4DecoderLayer(DecoderLayer):
                 overridden_tp_size=1 if self.enable_attention_dp else None,
                 is_llama4=True)
 
-            self.fusion_config.PRE_MLP_FUSION = model_config.mapping.has_tp()
-            self.fusion_config.POST_MLP_FUSION = model_config.mapping.has_tp()
+            self.fusion_config.PRE_MLP_FUSION = False#model_config.mapping.has_tp()
+            self.fusion_config.POST_MLP_FUSION = False# model_config.mapping.has_tp()
         else:
             self.feed_forward = Llama4MoE(
                 num_experts=config.num_local_experts,
@@ -308,8 +308,8 @@ class Llama4DecoderLayer(DecoderLayer):
                 aux_stream=aux_stream,
                 dtype=config.torch_dtype)
 
-            self.fusion_config.PRE_MOE_FUSION = model_config.mapping.has_tp()
-            self.fusion_config.POST_MOE_FUSION = model_config.mapping.has_tp()
+            self.fusion_config.PRE_MOE_FUSION = False # model_config.mapping.has_tp()
+            self.fusion_config.POST_MOE_FUSION = False # model_config.mapping.has_tp()
 
         self.input_layernorm = RMSNorm(hidden_size=config.hidden_size,
                                        eps=config.rms_norm_eps,
@@ -339,6 +339,9 @@ class Llama4DecoderLayer(DecoderLayer):
     ) -> torch.Tensor:
         # Only enable min-latency mode on Blackwell
         # TODO: Remove it after we fix crash on Hopper
+        # if self.mapping.tp_rank == 1:
+        #     import random
+        #     import remote_pdb; remote_pdb.set_trace(port=random.randint(10000, 65535))
         major, minor = torch.cuda.get_device_capability()
         is_blackwell = (major * 10 + minor) >= 100
         num_tokens = hidden_states.fp4_tensor.size(0) if isinstance(

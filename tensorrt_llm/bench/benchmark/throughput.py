@@ -205,7 +205,6 @@ def throughput_command(
     **params,
 ) -> None:
     """Run a throughput test on a TRT-LLM engine."""
-
     logger.info("Preparing to run throughput benchmark...")
     # Parameters from CLI
     # Model, experiment, and engine params
