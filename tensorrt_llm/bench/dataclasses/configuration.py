@@ -230,9 +230,9 @@ class ExecutorSettingsConfig(BaseModel):
                 capacity_scheduler_policy=self.scheduler_policy,
                 context_chunking_policy=ContextChunkingPolicy.
                 FIRST_COME_FIRST_SERVED,
-                dynamic_batch_config=self.get_dynamic_config(),
+                dynamic_batch_config=None#self.get_dynamic_config(),
             )
         else:
             return SchedulerConfig(
                 capacity_scheduler_policy=self.scheduler_policy,
-                dynamic_batch_config=self.get_dynamic_config())
+                dynamic_batch_config=None)#self.get_dynamic_config())

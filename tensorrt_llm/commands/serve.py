@@ -101,7 +101,7 @@ def get_llm_args(model: str,
         enable_max_num_tokens_tuning=False,
         dynamic_batch_moving_average_window=128)
     scheduler_config = SchedulerConfig(
-        capacity_scheduler_policy=CapacitySchedulerPolicy.GUARANTEED_NO_EVICT,
+        capacity_scheduler_policy=CapacitySchedulerPolicy.MAX_UTILIZATION,
         dynamic_batch_config=dynamic_batch_config,
     )
 
